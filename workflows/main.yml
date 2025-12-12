@@ -1,0 +1,47 @@
+# Nama workflow yang akan muncul di tab 'Actions' GitHub
+name: CI Build and Test
+
+# Kapan workflow ini akan dijalankan
+on:
+  # Trigger saat ada push ke branch 'main'
+  push:
+    branches: [ "main" ]
+  # Trigger saat ada Pull Request (PR) yang ditujukan ke branch 'main'
+  pull_request:
+    branches: [ "main" ]
+
+  # Memungkinkan untuk menjalankan workflow ini secara manual dari tab Actions
+  workflow_dispatch:
+
+# Definisi job yang akan dieksekusi
+jobs:
+  # Nama job pertama
+  build-and-test:
+    # Environment (OS) tempat job ini berjalan
+    runs-on: ubuntu-latest
+
+    # Langkah-langkah (Steps) yang akan dilakukan dalam job ini
+    steps:
+    
+      # 1. Checkout Kode: Mengambil salinan kode dari repositori
+      # Ini adalah action bawaan GitHub yang harus selalu ada
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js: Menginstal runtime Node.js (misalnya versi 20)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Ganti dengan versi yang Anda gunakan
+
+      # 3. Instal Dependensi: Menginstal paket/library yang dibutuhkan (misal: dari package.json)
+      - name: Install dependencies
+        run: npm install # Ganti dengan 'yarn install' atau 'pnpm install' jika Anda menggunakan package manager lain
+
+      # 4. Menjalankan Tes: Menjalankan script test (misalnya: yang didefinisikan di package.json)
+      - name: Run tests
+        run: npm test # Pastikan Anda memiliki script 'test' yang valid di package.json Anda
+        
+      # Contoh langkah opsional lainnya: Linter/Static Analysis
+      - name: Run Linter (Optional)
+        run: npm run lint # Hanya jika Anda memiliki script lint
